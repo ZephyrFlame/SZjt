@@ -41,6 +41,10 @@
             android:name="com.ilovelixin.szjt.SearchStationsActivity"
             android:label="@string/title_activity_search_stations" >
         </activity>
+        <activity
+            android:name="com.ilovelixin.szjt.MainSettingsActivity"
+            android:label="@string/title_activity_main_settings" >
+        </activity>
     </application>
 
 </manifest>
