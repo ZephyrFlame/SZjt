@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">苏州实时公交</string>
+    <string name="app_title">苏州公交实时查询信息</string>
+    <string name="action_settings">设置</string>
+    <string name="title_section1">电子站牌</string>
+    <string name="title_section2">线路状态</string>
+    <string name="title_section3">我的收藏</string>
+    <string name="btn_go">搜索</string>
+    <string name="tip_no_result">没有符合的结果</string>
+    <string name="tip_no_history">没有搜索记录</string>
+    <string name="tip_no_star">没有收藏记录</string>
+    <string name="toast_no_input">没有任何输入</string>
+    <string name="toast_added_star">已加入到收藏</string>
+    <string name="toast_removed_star">已从收藏中移除</string>
+    <string name="please_wait">请等待...</string>
+    <string name="searching_lines">“%s”相关的线路</string>
+    <string name="searching_stations">“%s”相关的站牌</string>
+    <string name="searching_wait">正在搜索，请等待...</string>
+    <string name="bus_not_start">车辆尚未驶出始发站</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_realtime_line">RealtimeLineActivity</string>
+    <string name="title_activity_realtime_station">RealtimeStationActivity</string>
+    <string name="title_activity_search_stations">SearchStationsActivity</string>
+
+</resources>
