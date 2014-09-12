@@ -10,10 +10,12 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +23,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -70,6 +73,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         
         // Init data provider for history and faverate
         DataProvider.initInstance(this);
+        
+        // Set default preference
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);  
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
@@ -103,7 +109,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-        actionBar.setSelectedNavigationItem(1);
+        
+        SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String pagePreference = mySharedPreferences.getString(MainSettingsActivity.PRF_DEFAULT_PAGE_KEY, MainSettingsActivity.PRF_DEFAULT_PAGE_VALUE);
+        actionBar.setSelectedNavigationItem(Integer.parseInt(pagePreference));
     }
     
     @Override  
@@ -144,6 +153,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    
+    @Override  
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {  
+        // TODO Auto-generated method stub  
+        super.onOptionsItemSelected(item);  
+        Intent intent = new Intent(this, MainSettingsActivity.class);  
+        startActivity(intent);  
+        return false;  
+    }  
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) 

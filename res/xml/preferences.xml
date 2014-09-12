@@ -1,0 +1,30 @@
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_header_page_default">
+
+        <ListPreference
+	        android:entries="@array/page_default_titles"
+	        android:entryValues="@array/page_default_values"
+	        android:key="default_page_list"
+	        android:defaultValue="1"
+	        android:summary="@string/title_section2" 
+	        android:negativeButtonText="@null"
+	        android:positiveButtonText="@null"
+	        android:title="@string/pref_title_page_default" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_network">
+
+        <Preference android:title="@string/pref_title_wifi_settings" >
+	        <intent android:action="android.settings.WIFI_SETTINGS" />
+	    </Preference>
+	    
+	    <Preference android:title="@string/pref_title_data_settings" 
+	        android:key="mobile_data" >
+	    </Preference>
+
+	</PreferenceCategory>
+
+</PreferenceScreen>
