@@ -52,15 +52,17 @@ public class HttpHelper
         List <NameValuePair> params = new ArrayList <NameValuePair>();
         if (is_line)
         {
-            params.add(new BasicNameValuePair("__VIEWSTATE", "/wEPDwUJNDk3MjU2MjgyD2QWAmYPZBYCAgMPZBYCAgEPZBYCAgYPDxYCHgdWaXNpYmxlaGRkZLSbkOWJhbw7r9tBdPn33bPCSlJcKXww5ounfGoyhKl3"));
-            params.add(new BasicNameValuePair("__EVENTVALIDATION", "/wEWAwLeub7XBwL88Oh8AqX89aoK1GKT3VlKUTd/xyQgZexCetMuo/i/LRDnisAyha1YxN0="));
+            params.add(new BasicNameValuePair("__VIEWSTATE", "/wEPDwUJNDk3MjU2MjgyD2QWAmYPZBYCAgMPZBYCAgEPZBYCAgYPDxYCHgdWaXNpYmxlaGRkZIRQOyvU8esCyqSqyd1qgFhT2+bZFSmxXzTNIR5o8kew"));
+            params.add(new BasicNameValuePair("__VIEWSTATEGENERATOR", "964EC381"));
+            params.add(new BasicNameValuePair("__EVENTVALIDATION", "/wEWAwKlwd6yBgL88Oh8AqX89aoKI18g5BVqDt3u2EEcQKTwefOjflsUjJWVUHv9BIcrXWc="));
             params.add(new BasicNameValuePair("ctl00$MainContent$LineName", keyword));
             params.add(new BasicNameValuePair("ctl00$MainContent$SearchLine", "ËÑË÷"));
         }
         else
         {
-            params.add(new BasicNameValuePair("__VIEWSTATE", "/wEPDwULLTE5ODM5MjcxNzlkZMRDQaX2utUjbGHOIUP3iptC9gAY2I3YLCpB16qioLAI"));
-            params.add(new BasicNameValuePair("__EVENTVALIDATION", "/wEWBQKWw5ntCwLq+uyKCAKkmJj/DwL0+sTIDgLl5vKEDljsKhZ4wQv+QX4Mur5a1YA5Wv4LH4UmUVklzGAJcHPX"));
+            params.add(new BasicNameValuePair("__VIEWSTATE", "/wEPDwULLTE5ODM5MjcxNzlkZI6G5BRzUdskhCZlnEaq908K57rffnLIIQaj+SS/lEx3"));
+            params.add(new BasicNameValuePair("__VIEWSTATEGENERATOR", "7BCA6D38"));
+            params.add(new BasicNameValuePair("__EVENTVALIDATION", "/wEWBQLBpcbHAwLq+uyKCAKkmJj/DwL0+sTIDgLl5vKEDgB1HJbeXqriwNGMfLxbB3/j63P66ss/L27YQwHCyDNt"));
             params.add(new BasicNameValuePair("ctl00$MainContent$StandName", keyword));
             params.add(new BasicNameValuePair("ctl00$MainContent$SearchCode", "ËÑË÷"));
             params.add(new BasicNameValuePair("ctl00$MainContent$StandCode", ""));

@@ -537,10 +537,20 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) 
                     {
+                        FaverateData item = faverates.get(arg2);
                         Intent intent = new Intent();
-                        intent.putExtra("guid", faverates.get(arg2).Keyword);
-                        intent.putExtra("title", faverates.get(arg2).Name);
-                        intent.setClass(getBaseContext(), RealtimeLineActivity.class);
+                        if (item.Type == FaverateData.LINE)
+                        {
+                            intent.putExtra("guid", item.Keyword);
+                            intent.putExtra("title", item.Name);
+                            intent.setClass(getBaseContext(), RealtimeLineActivity.class);
+                        }
+                        else
+                        {
+                            intent.putExtra("code", item.Keyword);
+                            intent.putExtra("title", item.Name);
+                            intent.setClass(getBaseContext(), RealtimeStationActivity.class);
+                        }
                         startActivity(intent);
                     }
                 });

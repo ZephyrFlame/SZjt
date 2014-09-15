@@ -20,7 +20,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.ilovelixin.szjt.SearchLinesActivity.SearchLinesAdapter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -30,6 +33,7 @@ public class SearchStationsActivity extends Activity
 {
     private final int NETWORK_DATA_OK = 0;
     private final int NETWORK_DATA_FAIL = 1;
+    private final int TOAST_TIMEOUT = 1000;
     
     private Handler mHandler;
     private List<StationSummary> mStations;
@@ -164,11 +168,11 @@ public class SearchStationsActivity extends Activity
     public class SearchLinesAdapter extends BaseAdapter
     {
         private LayoutInflater mInflater;
-        //private Context mContext;
+        private Context mContext;
 
         public SearchLinesAdapter(Context context)
         {
-            //mContext = context;
+            mContext = context;
             mInflater = LayoutInflater.from(context);
         }
         
@@ -209,24 +213,26 @@ public class SearchStationsActivity extends Activity
                 holder = (ViewHolder)arg1.getTag();
             }
             
+            final StationSummary station = mStations.get(arg0);
+            
             StringBuilder sb = new StringBuilder();
-            if (mStations.get(arg0).District != null && mStations.get(arg0).District.length() > 0)
+            if (station.District != null && station.District.length() > 0)
             {
-                sb.append(mStations.get(arg0).District);
+                sb.append(station.District);
             }
-            if (mStations.get(arg0).Route != null && mStations.get(arg0).Route.length() > 0)
+            if (station.Route != null && station.Route.length() > 0)
             {
                 if (sb.length() > 0)
                 {
                     sb.append("£¬");
                 }
-                sb.append(mStations.get(arg0).Route);
+                sb.append(station.Route);
             }
-            if (mStations.get(arg0).Side != null && mStations.get(arg0).Side.length() > 0)
+            if (station.Side != null && station.Side.length() > 0)
             {
                 if (sb.length() > 0)
                 {
-                    if (mStations.get(arg0).Side.length() > 1)
+                    if (station.Side.length() > 1)
                     {
                         sb.append("£¬");
                     }
@@ -235,17 +241,38 @@ public class SearchStationsActivity extends Activity
                         sb.append("£¬Â·");
                     }
                 }
-                sb.append(mStations.get(arg0).Side);
+                sb.append(station.Side);
             }
-            holder.title.setText(mStations.get(arg0).Name);
-            holder.summary.setText(sb.toString());
-            holder.icon.setImageResource(R.drawable.star_off);
+            final String info = sb.toString();
+
+            holder.title.setText(station.Name);
+            holder.summary.setText(info);
+            if (DataProvider.getInstance().isInFaverate(station.Code))
+            {
+                holder.icon.setImageResource(R.drawable.star_on);
+            }
+            else
+            {
+                holder.icon.setImageResource(R.drawable.star_off);
+            }
             holder.icon.setOnClickListener(
                     new View.OnClickListener() 
                     {
                         public void onClick(View v) 
                         {
                             //Toast.makeText(mContext, "stared: " + arg0, 1000).show();
+                            if (DataProvider.getInstance().isInFaverate(station.Code))
+                            {
+                                DataProvider.getInstance().deleteFaverate(station.Code);
+                                Toast.makeText(mContext, getString(R.string.toast_removed_star), TOAST_TIMEOUT).show();
+                            }
+                            else
+                            {
+                                DataProvider.getInstance().updateFaverateData(station.Name, FaverateData.STATION, station.Code, info);
+                                Toast.makeText(mContext, getString(R.string.toast_added_star), TOAST_TIMEOUT).show();
+                            }
+                            
+                            SearchLinesAdapter.this.notifyDataSetChanged();
                         }
                     });
 
