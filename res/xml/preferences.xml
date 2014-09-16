@@ -17,13 +17,15 @@
 
     <PreferenceCategory android:title="@string/pref_header_network">
 
-        <Preference android:title="@string/pref_title_wifi_settings" >
-	        <intent android:action="android.settings.WIFI_SETTINGS" />
-	    </Preference>
+	    <CheckBoxPreference
+                android:key="wifi_switch"
+                android:title="@string/pref_title_wifi_settings"
+                android:summary="@string/pref_summary_wifi_settings" />
 	    
-	    <Preference android:title="@string/pref_title_data_settings" 
-	        android:key="mobile_data" >
-	    </Preference>
+	    <CheckBoxPreference
+                android:key="data_switch"
+                android:title="@string/pref_title_data_settings"
+                android:summary="@string/pref_summary_data_settings" />
 
 	</PreferenceCategory>
 

@@ -16,5 +16,7 @@
     
     <string name="pref_header_network">网络设置</string>
     <string name="pref_title_wifi_settings">WIFI设置</string>
-    <string name="pref_title_data_settings">数据网络设置</string>
+    <string name="pref_title_data_settings">移动数据网络设置</string>
+    <string name="pref_summary_wifi_settings">启用无线局域网访问网络</string>
+    <string name="pref_summary_data_settings">启用手机数据流量访问网络</string>
 </resources>
