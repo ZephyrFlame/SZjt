@@ -195,6 +195,8 @@ public class DataProvider
             {
                 mManager.deleteFaverate(item);
                 mFaverates.remove(item);
+                
+                return;
             }
         }
     }

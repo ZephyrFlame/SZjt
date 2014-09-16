@@ -41,8 +41,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener 
 {
     private final int MSG_UPDATE = 0;
-    
     private final int TIMEOUT = 1000;
+
     private boolean mIsInited = false;
 
     /**
@@ -543,12 +543,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         {
                             intent.putExtra("guid", item.Keyword);
                             intent.putExtra("title", item.Name);
+                            intent.putExtra("summary", item.Info);
                             intent.setClass(getBaseContext(), RealtimeLineActivity.class);
                         }
                         else
                         {
                             intent.putExtra("code", item.Keyword);
                             intent.putExtra("title", item.Name);
+                            intent.putExtra("summary", item.Info);
                             intent.setClass(getBaseContext(), RealtimeStationActivity.class);
                         }
                         startActivity(intent);

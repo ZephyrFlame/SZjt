@@ -52,7 +52,7 @@ public class SearchLinesActivity extends ListActivity
         actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(String.format(getString(R.string.searching_lines), keyword));
         
-        forceShowOverflowMenu();
+        //forceShowOverflowMenu();
         
         mLines = new ArrayList<LineSummary>();
         mTipTextView = (TextView)findViewById(R.id.textHint);
@@ -102,7 +102,7 @@ public class SearchLinesActivity extends ListActivity
     public boolean onCreateOptionsMenu(Menu menu) 
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.search_lines, menu);
+        //getMenuInflater().inflate(R.menu.search_lines, menu);
         return true;
     }
     
@@ -133,6 +133,7 @@ public class SearchLinesActivity extends ListActivity
                 Intent intent = new Intent();
                 intent.putExtra("guid", mLines.get(arg2).Guid);
                 intent.putExtra("title", mLines.get(arg2).Info);
+                intent.putExtra("summary", mLines.get(arg2).Summary);
                 intent.setClass(SearchLinesActivity.this, RealtimeLineActivity.class);
                 startActivity(intent);
             }

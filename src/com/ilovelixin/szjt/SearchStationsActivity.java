@@ -53,7 +53,7 @@ public class SearchStationsActivity extends Activity
         actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(String.format(getString(R.string.searching_stations), keyword));
         
-        forceShowOverflowMenu();
+        //forceShowOverflowMenu();
         
         mStations = new ArrayList<StationSummary>();
         mTipTextView = (TextView)findViewById(R.id.textHint);
@@ -103,7 +103,7 @@ public class SearchStationsActivity extends Activity
     public boolean onCreateOptionsMenu(Menu menu) 
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.search_lines, menu);
+        //getMenuInflater().inflate(R.menu.search_lines, menu);
         return true;
     }
     
@@ -130,10 +130,42 @@ public class SearchStationsActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) 
             {
+                StationSummary station = mStations.get(arg2);
+                
+                StringBuilder sb = new StringBuilder();
+                if (station.District != null && station.District.length() > 0)
+                {
+                    sb.append(station.District);
+                }
+                if (station.Route != null && station.Route.length() > 0)
+                {
+                    if (sb.length() > 0)
+                    {
+                        sb.append("£¬");
+                    }
+                    sb.append(station.Route);
+                }
+                if (station.Side != null && station.Side.length() > 0)
+                {
+                    if (sb.length() > 0)
+                    {
+                        if (station.Side.length() > 1)
+                        {
+                            sb.append("£¬");
+                        }
+                        else
+                        {
+                            sb.append("£¬Â·");
+                        }
+                    }
+                    sb.append(station.Side);
+                }
+                
                 //Toast.makeText(getApplicationContext(), "arg2:" + arg2 + " arg3: " + arg3, 1000).show();
                 Intent intent = new Intent();
-                intent.putExtra("code", mStations.get(arg2).Code);
-                intent.putExtra("title", mStations.get(arg2).Name);
+                intent.putExtra("code", station.Code);
+                intent.putExtra("title", station.Name);
+                intent.putExtra("summary", sb.toString());
                 intent.setClass(SearchStationsActivity.this, RealtimeStationActivity.class);
                 startActivity(intent);
             }

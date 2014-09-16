@@ -11,13 +11,15 @@
     <string name="tip_no_result">没有符合的结果</string>
     <string name="tip_no_history">没有搜索记录</string>
     <string name="tip_no_star">没有收藏记录</string>
+    <string name="tip_no_position">没有位置信息</string>
     <string name="toast_no_input">没有任何输入</string>
     <string name="toast_added_star">已加入到收藏</string>
     <string name="toast_removed_star">已从收藏中移除</string>
     <string name="please_wait">请等待...</string>
     <string name="searching_lines">“%s”相关的线路</string>
     <string name="searching_stations">“%s”相关的站牌</string>
-    <string name="searching_wait">正在搜索，请等待...</string>
+    <string name="searching_wait">正在下载数据，请等待...</string>
+    <string name="refreshing_wait">正在更新数据，请等待...</string>
     <string name="bus_not_start">车辆尚未驶出始发站</string>
     <string name="action_favorite">收藏</string>
     <string name="action_refresh">更新</string>

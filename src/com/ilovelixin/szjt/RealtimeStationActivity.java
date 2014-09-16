@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 //import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -30,11 +32,15 @@ public class RealtimeStationActivity extends Activity
 {
     private final int NETWORK_DATA_OK = 0;
     private final int NETWORK_DATA_FAIL = 1;
+    private final int TIMEOUT = 1000;
     
     private String mCode;
+    private String mTitle;
+    private String mSummary;
     private Handler mHandler;
     private List<StationLineInfo> mLines;
     private TextView mTipTextView;
+    private Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -44,12 +50,13 @@ public class RealtimeStationActivity extends Activity
         
         Intent intent = getIntent();
         mCode = intent.getStringExtra("code");
-        String title = intent.getStringExtra("title");
+        mTitle = intent.getStringExtra("title");
+        mSummary = intent.getStringExtra("summary");
         
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setTitle(title);
+        actionBar.setTitle(mTitle);
         
         forceShowOverflowMenu();
         
@@ -61,6 +68,11 @@ public class RealtimeStationActivity extends Activity
             public void handleMessage(Message msg)
             {
                 super.handleMessage(msg);
+                
+                if (mDialog != null) 
+                {
+                    mDialog.dismiss();
+                }
                 
                 findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
                 switch (msg.what)
@@ -97,6 +109,23 @@ public class RealtimeStationActivity extends Activity
         case android.R.id.home:
             //NavUtils.navigateUpFromSameTask(this);        // if use this, ADD android:parentActivityName=".XXXActivity" IN Manifest
             finish();
+            return true;
+            
+        case R.id.action_favorite:
+            if (!DataProvider.getInstance().isInFaverate(mCode))
+            {
+                if (mSummary == null || mSummary.length() == 0)
+                {
+                    mSummary = getString(R.string.tip_no_position);
+                }
+                DataProvider.getInstance().updateFaverateData(mTitle, FaverateData.STATION, mCode, mSummary);
+            }
+            Toast.makeText(RealtimeStationActivity.this, getString(R.string.toast_added_star), TIMEOUT).show();
+            return true;
+            
+        case R.id.action_refresh:
+            startRefreshLineInfo();
+            showLoadingDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -137,6 +166,7 @@ public class RealtimeStationActivity extends Activity
                 Intent intent = new Intent();
                 intent.putExtra("guid", mLines.get(arg2).Guid);
                 intent.putExtra("title", mLines.get(arg2).Name);
+                intent.putExtra("summary", mLines.get(arg2).Summary);
                 intent.setClass(RealtimeStationActivity.this, RealtimeLineActivity.class);
                 startActivity(intent);
             }
@@ -159,6 +189,16 @@ public class RealtimeStationActivity extends Activity
         {
             e.printStackTrace();
         }
+    }
+    
+    private void showLoadingDialog()
+    {
+        if (mDialog != null) 
+        {
+            mDialog.cancel();
+        }
+        mDialog = LoadingDialog.createLoadingDialog(RealtimeStationActivity.this, getString(R.string.refreshing_wait));
+        mDialog.show();
     }
     
     public final class ViewHolder
