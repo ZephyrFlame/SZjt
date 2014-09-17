@@ -1,6 +1,7 @@
 
 package com.ilovelixin.szjt;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,8 +22,12 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-//import android.widget.Toast;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -38,8 +44,10 @@ public class RealtimeLineActivity extends Activity
     private String mSummary;
     private Handler mHandler;
     private List<StationInfo> mStations;
+    private PullToRefreshListView mListView;
     private TextView mTipTextView;
     private Dialog mDialog;
+    private LineStationsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -61,7 +69,7 @@ public class RealtimeLineActivity extends Activity
         
         mStations = new ArrayList<StationInfo>();
         mTipTextView = (TextView)findViewById(R.id.textHint);
-       
+        
         mHandler = new Handler()
         {
             public void handleMessage(Message msg)
@@ -150,9 +158,11 @@ public class RealtimeLineActivity extends Activity
     
     private void UpdateListView()
     {
-        ListView listView = (ListView) findViewById(android.R.id.list);
-        listView.setAdapter(new LineStationsAdapter(this));
-        listView.setOnItemClickListener(new OnItemClickListener()
+        mAdapter = new LineStationsAdapter(this);
+        
+        mListView = (PullToRefreshListView) findViewById(android.R.id.list);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) 
@@ -163,6 +173,20 @@ public class RealtimeLineActivity extends Activity
                 intent.putExtra("title", mStations.get(arg2).Name);
                 intent.setClass(RealtimeLineActivity.this, RealtimeStationActivity.class);
                 startActivity(intent);
+            }
+        });
+        mListView.setOnRefreshListener(new OnRefreshListener<ListView>() 
+        {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> refreshView) 
+            {
+                String label = DateUtils.formatDateTime(getApplicationContext(), System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
+
+                // Update the LastUpdatedLabel
+                refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
+
+                // Do work to refresh the list here.
+                new GetDataTask().execute();
             }
         });
     }
@@ -257,6 +281,42 @@ public class RealtimeLineActivity extends Activity
             }
 
             return arg1;
+        }
+    }
+    
+    private class GetDataTask extends AsyncTask<Void, Void, String>
+    {
+        //后台处理部分
+        @Override
+        protected String doInBackground(Void... params) 
+        {
+            String httpRet = HttpHelper.GetStationLineInfo(mGuid, true);
+            if (httpRet != null)
+            {
+                mStations.clear();
+                HttpHelper.ParseLineStations(httpRet, mStations);
+                
+                return getString(R.string.tip_refresh_success);
+            }
+            else
+            {
+                return getString(R.string.tip_refresh_fail);
+            }
+        }
+
+        //这里是对刷新的响应，可以利用addFirst（）和addLast()函数将新加的内容加到LISTView中
+        //根据AsyncTask的原理，onPostExecute里的result的值就是doInBackground()的返回值
+        @Override
+        protected void onPostExecute(String result) 
+        {
+            //通知程序数据集已经改变，如果不做通知，那么将不会刷新mListItems的集合
+            mAdapter.notifyDataSetChanged();
+            // Call onRefreshComplete when the list has been refreshed.
+            mListView.onRefreshComplete();
+            
+            Toast.makeText(RealtimeLineActivity.this, result, TIMEOUT).show();
+
+            super.onPostExecute(result);
         }
     }
 }

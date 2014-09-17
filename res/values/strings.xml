@@ -12,6 +12,8 @@
     <string name="tip_no_history">没有搜索记录</string>
     <string name="tip_no_star">没有收藏记录</string>
     <string name="tip_no_position">没有位置信息</string>
+    <string name="tip_refresh_fail">更新失败，请检查网络</string>
+    <string name="tip_refresh_success">更新已完成</string>
     <string name="toast_no_input">没有任何输入</string>
     <string name="toast_added_star">已加入到收藏</string>
     <string name="toast_removed_star">已从收藏中移除</string>
