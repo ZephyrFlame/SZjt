@@ -25,6 +25,11 @@
     <string name="bus_not_start">车辆尚未驶出始发站</string>
     <string name="action_favorite">收藏</string>
     <string name="action_refresh">更新</string>
+    <string name="menu_setting">设置</string>
+    <string name="menu_help">帮助</string>
+    <string name="menu_browser">使用网页方式</string>
+    <string name="menu_update">检查更新</string>
+    <string name="menu_exit">退出</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_realtime_line">RealtimeLineActivity</string>
     <string name="title_activity_realtime_station">RealtimeStationActivity</string>

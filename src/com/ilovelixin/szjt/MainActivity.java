@@ -20,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,12 +39,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+
+public class MainActivity extends SlidingFragmentActivity implements ActionBar.TabListener 
 {
     private final int MSG_UPDATE = 0;
     private final int TIMEOUT = 1000;
 
     private boolean mIsInited = false;
+    protected ListFragment mFrag;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -61,9 +66,31 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     ViewPager mViewPager;
     
     @Override
-    protected void onCreate(Bundle savedInstanceState) 
+    public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
+        
+        setBehindContentView(R.layout.menu_frame);
+        if (savedInstanceState == null)
+        {
+            android.support.v4.app.FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
+            mFrag = new SlidingMenuFragment();
+            t.replace(R.id.menu_frame, mFrag);
+            t.commit();
+        } 
+        else 
+        {
+            mFrag = (ListFragment)this.getSupportFragmentManager().findFragmentById(R.id.menu_frame);
+        }
+        
+        SlidingMenu sm = getSlidingMenu();
+        sm.setShadowWidthRes(R.dimen.shadow_width);
+        sm.setShadowDrawable(R.drawable.shadow);
+        sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        sm.setFadeDegree(0.35f);
+        sm.setMode(SlidingMenu.RIGHT);
+        sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
@@ -158,10 +185,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public boolean onOptionsItemSelected(MenuItem item) 
     {  
         // TODO Auto-generated method stub  
-        super.onOptionsItemSelected(item);  
-        Intent intent = new Intent(this, MainSettingsActivity.class);  
-        startActivity(intent);  
-        return false;  
+        switch (item.getItemId())
+        {
+        case R.id.action_more:   
+            //Intent intent = new Intent(this, MainSettingsActivity.class);  
+            //startActivity(intent);  
+            getSlidingMenu().showMenu();
+            return true;  
+        }
+        
+        return super.onOptionsItemSelected(item);
     }  
 
     @Override
