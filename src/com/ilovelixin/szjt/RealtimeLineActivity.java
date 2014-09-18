@@ -169,8 +169,8 @@ public class RealtimeLineActivity extends Activity
             {
                 //Toast.makeText(getApplicationContext(), "arg2:" + arg2 + " arg3: " + arg3, 1000).show();
                 Intent intent = new Intent();
-                intent.putExtra("code", mStations.get(arg2).Code);
-                intent.putExtra("title", mStations.get(arg2).Name);
+                intent.putExtra("code", mStations.get((int)arg3).Code);
+                intent.putExtra("title", mStations.get((int)arg3).Name);
                 intent.setClass(RealtimeLineActivity.this, RealtimeStationActivity.class);
                 startActivity(intent);
             }
