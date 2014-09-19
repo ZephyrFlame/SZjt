@@ -213,6 +213,15 @@ public class DataProvider
         
         return false;
     }
+
+    public void saveFaverate()
+    {
+        for (FaverateData item : mFaverates)
+        {
+            mManager.deleteFaverate(item);
+        }
+        mManager.addFaverate(mFaverates);
+    }
     
     private void initHistory()
     {

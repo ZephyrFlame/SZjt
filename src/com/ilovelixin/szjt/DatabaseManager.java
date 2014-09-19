@@ -100,7 +100,7 @@ public class DatabaseManager
         {
             for (FaverateData faverate : faverates) 
             {
-                db.execSQL("INSERT INTO faverate VALUES(null, ?, ?, ?)", new Object[]{faverate.Name, faverate.Type, faverate.Keyword, faverate.Info});
+                db.execSQL("INSERT INTO faverate VALUES(null, ?, ?, ?, ?)", new Object[]{faverate.Name, faverate.Type, faverate.Keyword, faverate.Info});
             }
             db.setTransactionSuccessful();
         } 

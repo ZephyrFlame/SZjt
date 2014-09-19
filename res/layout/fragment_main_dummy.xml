@@ -8,12 +8,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$DummySectionFragment" >
 
-    <ListView
+    <com.mobeta.android.dslv.DragSortListView
+        xmlns:dslv="http://schemas.android.com/apk/res/com.ilovelixin.szjt"
         android:id="@+id/listFaverate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="23dp" >
-    </ListView>
+        android:layout_margin="5dp"
+        android:dividerHeight="5dp"
+        android:fastScrollEnabled="true"
+        dslv:collapsed_height="2dp"
+        dslv:drag_enabled="true"
+        dslv:drag_handle_id="@id/drag_handle"
+        dslv:drag_scroll_start="0.99"
+        dslv:drag_start_mode="onDown"
+        dslv:float_alpha="0.6"
+        dslv:max_drag_scroll_speed="0.6"
+        dslv:remove_enabled="true"
+        dslv:remove_mode="flingRemove"
+        dslv:slide_shuffle_speed="0.5"
+        dslv:sort_enabled="true"
+        dslv:track_drag_sort="false"
+        dslv:use_default_controller="true" />
     
     <TextView
         android:id="@+id/textFaverate"

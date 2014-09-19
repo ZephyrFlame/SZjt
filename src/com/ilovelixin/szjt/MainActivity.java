@@ -41,6 +41,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+import com.mobeta.android.dslv.DragSortListView;
 
 public class MainActivity extends SlidingFragmentActivity implements ActionBar.TabListener 
 {
@@ -162,6 +163,12 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
     {  
         super.onPause();  
         
+        FaverateSectionFragment fragment = (FaverateSectionFragment)mSectionsPagerAdapter.getItem(2);
+        if (fragment != null)
+        {
+            fragment.preLeavePage();
+        }
+        
         mIsInited = true;
     }
 
@@ -202,6 +209,16 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
     {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
+        if (tab.getPosition() == 2)
+        {
+            InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE); 
+            if (imm.isActive())
+            {
+                EditText textName = (EditText) this.findViewById(R.id.editLineName);
+                imm.hideSoftInputFromWindow(textName.getWindowToken(), 0);
+            }
+        }
+        
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
@@ -523,7 +540,49 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
     {
         private Handler mHandler;
         private TextView mTextView;
-        private ListView mListView;
+        private DragSortListView mListView;
+        private FaverateAdapter mAdapter;
+        
+        private DragSortListView.DropListener mDropListener = new DragSortListView.DropListener() {
+            @Override
+            public void drop(int from, int to) 
+            {
+                if (from != to)
+                {
+                    FaverateData item = (FaverateData) mAdapter.getItem(from);
+    
+                    mAdapter.notifyDataSetChanged();
+                    mAdapter.remove(item);
+                    mAdapter.insert(item, to);
+                }
+            }
+        };
+
+        private DragSortListView.RemoveListener mRemoveListener = new DragSortListView.RemoveListener() 
+        {
+            @Override
+            public void remove(int which) 
+            {
+                mAdapter.remove((FaverateData) mAdapter.getItem(which));
+            }
+        };
+
+        private DragSortListView.DragScrollProfile mDragScrollProfile = new DragSortListView.DragScrollProfile() 
+        {
+            @Override
+            public float getSpeed(float w, long t) 
+            {
+                if (w > 0.8f) 
+                {
+                    // Traverse all views in a millisecond
+                    return ((float) mAdapter.getCount()) / 0.001f;
+                } 
+                else 
+                {
+                    return 10.0f * w;
+                }
+            }
+        };
 
         public FaverateSectionFragment() 
         {
@@ -536,7 +595,7 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
                     switch (msg.what)
                     {
                         case MSG_UPDATE:
-                            ((FaverateAdapter)mListView.getAdapter()).notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                             if (DataProvider.getInstance().getFaverate().size() == 0)
                             {
                                 mTextView.setVisibility(View.VISIBLE);
@@ -559,12 +618,17 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
             View rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false);
             
             mTextView = (TextView) rootView.findViewById(R.id.textFaverate);
-            mListView = (ListView) rootView.findViewById(R.id.listFaverate);
+            mListView = (DragSortListView) rootView.findViewById(R.id.listFaverate);
+            mListView.setDropListener(mDropListener);
+            mListView.setRemoveListener(mRemoveListener);
+            mListView.setDragScrollProfile(mDragScrollProfile);
 
             final List<FaverateData> faverates = DataProvider.getInstance().getFaverate();
             if (faverates != null)
             {
-                mListView.setAdapter(new FaverateAdapter(inflater, faverates, mHandler));
+                mAdapter = new FaverateAdapter(inflater, faverates, mHandler);
+                
+                mListView.setAdapter(mAdapter);
                 mListView.setOnItemClickListener(new OnItemClickListener()
                 {
                     @Override
@@ -605,7 +669,7 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
         
         public void notifyUpdate()
         {
-            ((FaverateAdapter)mListView.getAdapter()).notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
             if (DataProvider.getInstance().getFaverate().size() == 0)
             {
                 mTextView.setVisibility(View.VISIBLE);
@@ -615,6 +679,14 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
             {
                 mTextView.setVisibility(View.GONE);
                 mListView.setVisibility(View.VISIBLE);
+            }
+        }
+        
+        public void preLeavePage()
+        {
+            if (mAdapter.isChanged())
+            {
+                DataProvider.getInstance().saveFaverate();
             }
         }
     }
@@ -714,6 +786,7 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
         private LayoutInflater mInflater;
         private List<FaverateData> mFaverateData;
         private Handler mHandler;
+        private boolean mIsChanged;
 
         public FaverateAdapter(LayoutInflater inflater, List<FaverateData> list, Handler handler)
         {
@@ -721,8 +794,26 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
             mInflater = inflater;
             mFaverateData = list;
             mHandler = handler;
+            mIsChanged = false;
         }
         
+        public boolean isChanged()
+        {
+            return mIsChanged;
+        }
+        
+        public void insert(FaverateData item, int to) 
+        {
+            mFaverateData.add(to, item);
+            mIsChanged = true;
+        }
+
+        public void remove(FaverateData item) 
+        {
+            mFaverateData.remove(item);
+            mIsChanged = true;
+        }
+
         @Override
         public int getCount() 
         {
@@ -732,7 +823,7 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
         @Override
         public Object getItem(int arg0) 
         {
-            return null;
+            return mFaverateData.get(arg0);
         }
 
         @Override
@@ -747,7 +838,7 @@ public class MainActivity extends SlidingFragmentActivity implements ActionBar.T
             ViewHolder holder = null;
             if (arg1 == null)
             {
-                arg1 = mInflater.inflate(R.layout.two_line_one_icon, null);
+                arg1 = mInflater.inflate(R.layout.two_line_one_icon_drag, null);
                 holder = new ViewHolder();
                 holder.title = (TextView)arg1.findViewById(R.id.textMain);
                 holder.summary = (TextView)arg1.findViewById(R.id.textSub);
